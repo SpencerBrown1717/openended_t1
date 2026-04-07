@@ -22,7 +22,10 @@
   }
 
   html, body {
-    width: 100%; height: 100%; overflow: hidden;
+    width: 100%;
+    min-height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
     background: linear-gradient(135deg, #dce8f0 0%, #eaf0f5 25%, #f5f0ee 50%, #eef0f8 75%, #d8e8f2 100%);
   }
 
@@ -31,7 +34,9 @@
     display: flex; flex-direction: column;
     align-items: center; justify-content: center;
     min-height: 100vh;
+    min-height: 100dvh;
     position: relative;
+    padding: 2.5rem 0 5.5rem;
   }
 
   /* Ambient orbs */
@@ -98,9 +103,8 @@
   /* Grid */
   .grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(2, 1fr);
-    gap: 14px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(10px, 1.5vw, 14px);
     width: 100%;
     animation: fadeUp 1s 0.2s cubic-bezier(.22,.68,0,1.2) both;
   }
@@ -112,7 +116,7 @@
     background: var(--frost-card);
     backdrop-filter: blur(22px) saturate(1.6);
     -webkit-backdrop-filter: blur(22px) saturate(1.6);
-    aspect-ratio: 4/3.2;
+    aspect-ratio: 4 / 3.2;
     cursor: pointer;
     transition: transform 0.4s cubic-bezier(.22,.68,0,1.2), box-shadow 0.4s ease, border-color 0.3s ease;
     box-shadow:
@@ -209,6 +213,8 @@
     padding: 1rem 2.5rem;
     display: flex; justify-content: space-between; align-items: center;
     z-index: 10;
+    background: linear-gradient(to top, rgba(235,242,248,0.82), rgba(235,242,248,0));
+    backdrop-filter: blur(2px);
   }
 
   .footer-strip span {
@@ -241,10 +247,33 @@
     to   { opacity: 1; transform: translateY(0) scale(1); }
   }
 
-  @media (max-width: 700px) {
-    .grid { grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(3, 1fr); }
-    h1 { font-size: 2.8rem; }
-    .site-wrap { padding: 0 1.2rem; }
+  @media (max-width: 1024px) {
+    body { padding: 2rem 0 5rem; }
+    .site-wrap { padding: 0 1.6rem; }
+  }
+
+  @media (max-width: 760px) {
+    body { justify-content: flex-start; padding: 1.6rem 0 1.4rem; }
+    .header { margin-bottom: 1.35rem; }
+    .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    h1 { font-size: clamp(2.35rem, 12vw, 3.2rem); }
+    .eyebrow, .tagline { letter-spacing: 0.22em; }
+    .footer-strip {
+      position: static;
+      width: 100%;
+      margin-top: 1.2rem;
+      padding: 0.8rem 1.2rem 1.1rem;
+      background: none;
+      backdrop-filter: none;
+    }
+  }
+
+  @media (max-width: 460px) {
+    .site-wrap { padding: 0 0.9rem; }
+    .grid { grid-template-columns: 1fr; }
+    .card { border-radius: 16px; }
+    .coming-badge { letter-spacing: 0.24em; }
+    .footer-strip span { font-size: 0.54rem; letter-spacing: 0.2em; }
   }
 </style>
 </head>
