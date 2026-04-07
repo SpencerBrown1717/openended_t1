@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Openended</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=Jost:wght@200;300;400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --frost: rgba(255,255,255,0.72);
+    --frost-deep: rgba(255,255,255,0.88);
+    --frost-card: rgba(255,255,255,0.55);
+    --border: rgba(255,255,255,0.85);
+    --border-subtle: rgba(200,210,220,0.45);
+    --text-dark: #0a0a0f;
+    --text-mid: #3a3a4a;
+    --text-soft: #7a8a9a;
+    --accent: #0a0a0f;
+  }
+
+  html, body {
+    width: 100%; height: 100%; overflow: hidden;
+    background: linear-gradient(135deg, #dce8f0 0%, #eaf0f5 25%, #f5f0ee 50%, #eef0f8 75%, #d8e8f2 100%);
+  }
+
+  body {
+    font-family: 'Jost', sans-serif;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    min-height: 100vh;
+    position: relative;
+  }
+
+  /* Ambient orbs */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    background:
+      radial-gradient(ellipse 55% 40% at 15% 20%, rgba(180,210,235,0.55) 0%, transparent 70%),
+      radial-gradient(ellipse 45% 50% at 85% 75%, rgba(200,185,220,0.35) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 35% at 60% 10%, rgba(220,230,245,0.5) 0%, transparent 70%),
+      radial-gradient(ellipse 35% 40% at 10% 80%, rgba(190,220,230,0.4) 0%, transparent 70%);
+  }
+
+  /* Noise texture */
+  body::after {
+    content: '';
+    position: fixed; inset: 0; pointer-events: none; z-index: 0; opacity: 0.028;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    background-size: 180px 180px;
+  }
+
+  .site-wrap {
+    position: relative; z-index: 1;
+    width: 100%; max-width: 1140px;
+    padding: 0 2.5rem;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 0;
+  }
+
+  /* Header */
+  .header {
+    text-align: center; margin-bottom: 2rem;
+    animation: fadeDown 1s cubic-bezier(.22,.68,0,1.2) both;
+  }
+
+  .eyebrow {
+    font-family: 'Jost', sans-serif;
+    font-weight: 200; font-size: 0.65rem;
+    letter-spacing: 0.38em; text-transform: uppercase;
+    color: var(--text-soft); margin-bottom: 0.6rem;
+  }
+
+  h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 700; font-size: clamp(3.2rem, 6vw, 5.2rem);
+    color: var(--text-dark); line-height: 0.92;
+    letter-spacing: -0.02em;
+  }
+
+  h1 span {
+    display: block;
+    color: transparent;
+    -webkit-text-stroke: 1.5px var(--text-dark);
+    font-weight: 300;
+  }
+
+  .tagline {
+    font-family: 'Jost', sans-serif;
+    font-weight: 200; font-size: 0.72rem;
+    letter-spacing: 0.28em; text-transform: uppercase;
+    color: var(--text-soft); margin-top: 0.9rem;
+  }
+
+  /* Grid */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 14px;
+    width: 100%;
+    animation: fadeUp 1s 0.2s cubic-bezier(.22,.68,0,1.2) both;
+  }
+
+  .card {
+    position: relative; overflow: hidden;
+    border-radius: 18px;
+    border: 1px solid var(--border);
+    background: var(--frost-card);
+    backdrop-filter: blur(22px) saturate(1.6);
+    -webkit-backdrop-filter: blur(22px) saturate(1.6);
+    aspect-ratio: 4/3.2;
+    cursor: pointer;
+    transition: transform 0.4s cubic-bezier(.22,.68,0,1.2), box-shadow 0.4s ease, border-color 0.3s ease;
+    box-shadow:
+      0 2px 0 0 rgba(255,255,255,0.9) inset,
+      0 -1px 0 0 rgba(150,170,190,0.18) inset,
+      0 8px 32px rgba(100,130,160,0.1),
+      0 1px 3px rgba(100,130,160,0.08);
+  }
+
+  .card::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.1) 60%, rgba(200,220,240,0.08) 100%);
+    pointer-events: none; z-index: 1;
+  }
+
+  /* Shimmer highlight on top edge */
+  .card::after {
+    content: '';
+    position: absolute; top: 0; left: 12%; right: 12%; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,1), transparent);
+    pointer-events: none; z-index: 2;
+  }
+
+  .card:hover {
+    transform: translateY(-4px) scale(1.015);
+    border-color: rgba(255,255,255,0.95);
+    box-shadow:
+      0 2px 0 0 rgba(255,255,255,0.95) inset,
+      0 -1px 0 0 rgba(150,170,190,0.22) inset,
+      0 20px 50px rgba(80,110,140,0.18),
+      0 4px 12px rgba(80,110,140,0.12);
+  }
+
+  .card-inner {
+    position: absolute; inset: 0; z-index: 3;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: flex-end;
+    padding: 1.2rem;
+  }
+
+  /* Subtle pattern background per card */
+  .card-bg {
+    position: absolute; inset: 0; z-index: 0;
+    opacity: 0.04;
+  }
+
+  .coming-badge {
+    font-family: 'Jost', sans-serif;
+    font-weight: 300; font-size: 0.58rem;
+    letter-spacing: 0.32em; text-transform: uppercase;
+    color: var(--text-mid);
+    background: rgba(255,255,255,0.7);
+    border: 0.5px solid rgba(150,165,180,0.4);
+    padding: 5px 14px 4px;
+    border-radius: 100px;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  /* Large decorative shapes inside cards */
+  .deco {
+    position: absolute; z-index: 0;
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  .card:nth-child(1) .deco { width: 120px; height: 120px; top: -30px; right: -20px; background: radial-gradient(circle, rgba(200,215,235,0.5), transparent 70%); }
+  .card:nth-child(2) .deco { width: 100px; height: 100px; bottom: -20px; left: 10px; background: radial-gradient(circle, rgba(220,200,230,0.4), transparent 70%); }
+  .card:nth-child(3) .deco { width: 140px; height: 80px; top: 10px; left: -30px; background: radial-gradient(ellipse, rgba(195,220,240,0.45), transparent 70%); }
+  .card:nth-child(4) .deco { width: 90px; height: 140px; bottom: -10px; right: 20px; background: radial-gradient(ellipse, rgba(215,205,235,0.4), transparent 70%); }
+  .card:nth-child(5) .deco { width: 110px; height: 110px; top: -10px; left: 30%; background: radial-gradient(circle, rgba(200,225,245,0.45), transparent 70%); }
+  .card:nth-child(6) .deco { width: 130px; height: 90px; bottom: 0; left: -20px; background: radial-gradient(ellipse, rgba(225,210,235,0.38), transparent 70%); }
+
+  /* Nav dots */
+  .nav {
+    display: flex; gap: 7px; margin-top: 1.6rem;
+    animation: fadeUp 1s 0.4s cubic-bezier(.22,.68,0,1.2) both;
+  }
+
+  .dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: rgba(100,120,140,0.3);
+    transition: background 0.3s, transform 0.3s;
+  }
+  .dot.active {
+    background: rgba(40,55,75,0.7);
+    transform: scale(1.5);
+  }
+
+  /* Footer strip */
+  .footer-strip {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    padding: 1rem 2.5rem;
+    display: flex; justify-content: space-between; align-items: center;
+    z-index: 10;
+  }
+
+  .footer-strip span {
+    font-family: 'Jost', sans-serif;
+    font-weight: 200; font-size: 0.6rem;
+    letter-spacing: 0.3em; text-transform: uppercase;
+    color: var(--text-soft);
+  }
+
+  /* Animations */
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Stagger cards */
+  .card:nth-child(1) { animation: cardIn 0.7s 0.3s both; }
+  .card:nth-child(2) { animation: cardIn 0.7s 0.38s both; }
+  .card:nth-child(3) { animation: cardIn 0.7s 0.46s both; }
+  .card:nth-child(4) { animation: cardIn 0.7s 0.54s both; }
+  .card:nth-child(5) { animation: cardIn 0.7s 0.62s both; }
+  .card:nth-child(6) { animation: cardIn 0.7s 0.70s both; }
+
+  @keyframes cardIn {
+    from { opacity: 0; transform: translateY(28px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  @media (max-width: 700px) {
+    .grid { grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(3, 1fr); }
+    h1 { font-size: 2.8rem; }
+    .site-wrap { padding: 0 1.2rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="site-wrap">
+
+  <header class="header">
+    <p class="eyebrow">LA Designs — Shipped Globally</p>
+    <h1>Openended<span>Studio</span></h1>
+    <p class="tagline">Forthcoming</p>
+  </header>
+
+  <div class="grid">
+
+    <div class="card">
+      <div class="deco"></div>
+      <div class="card-inner">
+        <span class="coming-badge">Coming Soon</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="deco"></div>
+      <div class="card-inner">
+        <span class="coming-badge">Coming Soon</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="deco"></div>
+      <div class="card-inner">
+        <span class="coming-badge">Coming Soon</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="deco"></div>
+      <div class="card-inner">
+        <span class="coming-badge">Coming Soon</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="deco"></div>
+      <div class="card-inner">
+        <span class="coming-badge">Coming Soon</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="deco"></div>
+      <div class="card-inner">
+        <span class="coming-badge">Coming Soon</span>
+      </div>
+    </div>
+
+  </div>
+
+  <nav class="nav">
+    <div class="dot active"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+  </nav>
+
+</div>
+
+<footer class="footer-strip">
+  <span>Openended Studio</span>
+  <span>New York · Paris</span>
+</footer>
+
+</body>
+</html>
